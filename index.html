@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚽 Teacher Bathroom Pass Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .filament-colors {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .color-btn {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 80px;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .color-btn:hover {
+            transform: scale(1.05);
+            border-color: #667eea;
+        }
+
+        .color-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid rgba(0,0,0,0.1);
+        }
+
+        .color-name {
+            font-size: 0.9em;
+            word-break: break-word;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background-color: #f9f9ff;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .pass-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .pass-item {
+            background: #f5f5f5;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pass-info {
+            flex: 1;
+        }
+
+        .pass-info strong {
+            color: #333;
+        }
+
+        .pass-info small {
+            color: #666;
+            display: block;
+            margin-top: 4px;
+        }
+
+        .delete-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #ff5252;
+        }
+
+        .add-color-section {
+            background: #f9f9ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 2px dashed #667eea;
+        }
+
+        .color-input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .color-input-group input[type="color"] {
+            width: 100%;
+            height: 45px;
+            cursor: pointer;
+        }
+
+        .success-message {
+            background: #4caf50;
+            color: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .emoji {
+            font-size: 1.2em;
+            margin-right: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .color-input-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚽 Bathroom Pass Manager</h1>
+            <p>Make bathroom pass requests simple and fun for your classroom!</p>
+        </header>
+
+        <div class="main-grid">
+            <!-- Filament Colors Section -->
+            <div class="card">
+                <h2><span class="emoji">🎨</span>Filament Colors</h2>
+                <div class="success-message" id="colorSuccess">✓ Color added successfully!</div>
+                
+                <div class="filament-colors" id="colorContainer">
+                    <!-- Colors will be added here -->
+                </div>
+
+                <div class="add-color-section">
+                    <h3 style="color: #667eea; margin-bottom: 10px;">➕ Add New Color</h3>
+                    <div class="form-group">
+                        <label for="colorName">Color Name:</label>
+                        <input type="text" id="colorName" placeholder="e.g., Sunset Red, Ocean Blue">
+                    </div>
+                    <div class="color-input-group">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="colorPicker">Pick Color:</label>
+                            <input type="color" id="colorPicker" value="#ff0000">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <button onclick="addColor()" style="margin-top: 25px;">Add Color</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Pass Request Section -->
+            <div class="card">
+                <h2><span class="emoji">✏️</span>Request a Pass</h2>
+                <div class="success-message" id="passSuccess">✓ Pass requested! Have a good trip! 🚀</div>
+                
+                <div class="form-group">
+                    <label for="studentName">Student Name:</label>
+                    <input type="text" id="studentName" placeholder="Your name">
+                </div>
+
+                <div class="form-group">
+                    <label for="filamentColor">Choose a Filament Color:</label>
+                    <select id="filamentColor">
+                        <option value="">-- Select a color --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="reason">Reason:</label>
+                    <select id="reason">
+                        <option value="Bathroom">🚽 Bathroom</option>
+                        <option value="Drink Water">💧 Drink Water</option>
+                        <option value="Office">📋 Office</option>
+                        <option value="Nurse">🏥 Nurse</option>
+                        <option value="Other">❓ Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">Notes (optional):</label>
+                    <textarea id="notes" placeholder="Any additional info..." rows="3"></textarea>
+                </div>
+
+                <button onclick="submitPass()"><span class="emoji">📤</span>Submit Pass Request</button>
+            </div>
+        </div>
+
+        <!-- Active Passes Section -->
+        <div class="card">
+            <h2><span class="emoji">📋</span>Active Pass Requests</h2>
+            <div class="pass-list" id="passList">
+                <p style="color: #999; text-align: center; padding: 20px;">No active passes yet. Be the first to request one! 🎉</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Default filament colors
+        const defaultColors = [
+            { name: "Red", hex: "#ff0000" },
+            { name: "Blue", hex: "#0000ff" },
+            { name: "Yellow", hex: "#ffff00" },
+            { name: "Green", hex: "#00aa00" },
+            { name: "Purple", hex: "#aa00ff" },
+            { name: "Orange", hex: "#ff8800" }
+        ];
+
+        let passes = [];
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', function() {
+            loadColors();
+            displayColors();
+            displayPasses();
+        });
+
+        // Load colors from localStorage
+        function loadColors() {
+            const saved = localStorage.getItem('filamentColors');
+            if (!saved) {
+                localStorage.setItem('filamentColors', JSON.stringify(defaultColors));
+            }
+        }
+
+        // Get all colors
+        function getColors() {
+            return JSON.parse(localStorage.getItem('filamentColors')) || defaultColors;
+        }
+
+        // Display colors
+        function displayColors() {
+            const colors = getColors();
+            const container = document.getElementById('colorContainer');
+            const select = document.getElementById('filamentColor');
+
+            container.innerHTML = '';
+            select.innerHTML = '<option value="">-- Select a color --</option>';
+
+            colors.forEach((color, index) => {
+                // Add to color display
+                const btn = document.createElement('div');
+                btn.className = 'color-btn';
+                btn.innerHTML = `
+                    <div class="color-circle" style="background-color: ${color.hex};"></div>
+                    <div class="color-name">${color.name}</div>
+                    <button class="delete-btn" onclick="deleteColor(${index})" style="padding: 4px 8px; font-size: 0.8em;">Delete</button>
+                `;
+                container.appendChild(btn);
+
+                // Add to select dropdown
+                const option = document.createElement('option');
+                option.value = color.name;
+                option.textContent = color.name;
+                select.appendChild(option);
+            });
+        }
+
+        // Add new color
+        function addColor() {
+            const name = document.getElementById('colorName').value.trim();
+            const hex = document.getElementById('colorPicker').value;
+
+            if (!name) {
+                alert('Please enter a color name!');
+                return;
+            }
+
+            const colors = getColors();
+            colors.push({ name, hex });
+            localStorage.setItem('filamentColors', JSON.stringify(colors));
+
+            document.getElementById('colorName').value = '';
+            document.getElementById('colorPicker').value = '#ff0000';
+
+            displayColors();
+            showSuccess('colorSuccess');
+        }
+
+        // Delete color
+        function deleteColor(index) {
+            if (confirm('Delete this color?')) {
+                const colors = getColors();
+                colors.splice(index, 1);
+                localStorage.setItem('filamentColors', JSON.stringify(colors));
+                displayColors();
+            }
+        }
+
+        // Submit pass request
+        function submitPass() {
+            const name = document.getElementById('studentName').value.trim();
+            const color = document.getElementById('filamentColor').value;
+            const reason = document.getElementById('reason').value;
+            const notes = document.getElementById('notes').value.trim();
+
+            if (!name || !color) {
+                alert('Please fill in name and color!');
+                return;
+            }
+
+            const pass = {
+                id: Date.now(),
+                name,
+                color,
+                reason,
+                notes,
+                time: new Date().toLocaleTimeString()
+            };
+
+            passes.push(pass);
+            localStorage.setItem('passes', JSON.stringify(passes));
+
+            document.getElementById('studentName').value = '';
+            document.getElementById('filamentColor').value = '';
+            document.getElementById('notes').value = '';
+
+            displayPasses();
+            showSuccess('passSuccess');
+        }
+
+        // Display passes
+        function displayPasses() {
+            passes = JSON.parse(localStorage.getItem('passes')) || [];
+            const list = document.getElementById('passList');
+
+            if (passes.length === 0) {
+                list.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">No active passes yet. Be the first to request one! 🎉</p>';
+                return;
+            }
+
+            list.innerHTML = passes.map(pass => `
+                <div class="pass-item">
+                    <div class="pass-info">
+                        <strong>📌 ${pass.name}</strong>
+                        <small>Color: <span style="color: ${getColorHex(pass.color)}; font-weight: bold;">● ${pass.color}</span> | ${pass.reason}</small>
+                        <small style="color: #999;">${pass.time}${pass.notes ? ' | ' + pass.notes : ''}</small>
+                    </div>
+                    <button class="delete-btn" onclick="deletePass(${pass.id})">✓ Complete</button>
+                </div>
+            `).join('');
+        }
+
+        // Get hex color from name
+        function getColorHex(colorName) {
+            const colors = getColors();
+            const color = colors.find(c => c.name === colorName);
+            return color ? color.hex : '#999';
+        }
+
+        // Delete pass
+        function deletePass(id) {
+            passes = passes.filter(p => p.id !== id);
+            localStorage.setItem('passes', JSON.stringify(passes));
+            displayPasses();
+        }
+
+        // Show success message
+        function showSuccess(elementId) {
+            const el = document.getElementById(elementId);
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 2000);
+        }
+    </script>
+</body>
+</html>
