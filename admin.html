@@ -3,397 +3,88 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Teacher Pass Admin</title>
+  <title>Admin</title>
   <style>
-    :root {
-      --bg: #eef4ff;
-      --bg2: #f8fbff;
-      --card: rgba(255,255,255,0.94);
-      --text: #1f2937;
-      --muted: #667085;
-      --primary: #4f46e5;
-      --primary2: #7c3aed;
-      --success: #16a34a;
-      --danger: #dc2626;
-      --line: rgba(99,102,241,0.16);
-      --shadow: 0 20px 50px rgba(79,70,229,0.14);
-      --soft: 0 10px 24px rgba(15,23,42,0.08);
-      --radius: 24px;
-      --max: 1120px;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: Inter, Arial, sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(79,70,229,0.12), transparent 30%),
-        linear-gradient(180deg, var(--bg) 0%, var(--bg2) 60%, #edf3ff 100%);
-      min-height: 100vh;
-      line-height: 1.55;
+      font-family: Arial, sans-serif;
+      background: #f5f7ff;
+      margin: 0;
+      padding: 40px 20px;
     }
-
-    button, input, select { font: inherit; }
-    a { color: inherit; text-decoration: none; }
-    .container { width: min(calc(100% - 2rem), var(--max)); margin: 0 auto; }
-
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      background: rgba(248,251,255,0.84);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(99,102,241,0.08);
-    }
-
-    .nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-      padding: 1rem 0;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      font-weight: 900;
-      letter-spacing: -0.03em;
-    }
-
-    .brand-mark {
-      width: 46px;
-      height: 46px;
-      border-radius: 16px;
-      display: grid;
-      place-items: center;
-      color: white;
-      background: linear-gradient(135deg, var(--primary), var(--primary2));
-      box-shadow: var(--soft);
-      font-size: 1.15rem;
-    }
-
-    .nav-actions {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      border: none;
-      border-radius: 15px;
-      padding: 0.9rem 1rem;
-      font-weight: 800;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.18s ease, box-shadow 0.18s ease;
-    }
-
-    .btn:hover { transform: translateY(-2px); }
-    .btn-primary {
-      color: white;
-      background: linear-gradient(135deg, var(--primary), var(--primary2));
-      box-shadow: var(--shadow);
-    }
-    .btn-secondary {
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
       background: white;
-      color: var(--text);
-      border: 1px solid var(--line);
-      box-shadow: var(--soft);
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
     }
-    .btn-success {
-      color: white;
-      background: linear-gradient(135deg, var(--success), #22c55e);
-    }
-    .btn-danger {
-      color: var(--danger);
-      background: rgba(220,38,38,0.10);
-    }
-
-    .page { padding: 2rem 0 3rem; }
-
-    .hero {
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 1rem;
-      align-items: start;
-      margin-bottom: 1rem;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 1.35rem;
-      backdrop-filter: blur(16px);
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      padding: 0.55rem 0.9rem;
-      border-radius: 999px;
-      background: rgba(79,70,229,0.08);
-      border: 1px solid rgba(79,70,229,0.14);
-      color: var(--primary);
-      font-weight: 800;
-      margin-bottom: 1rem;
-      font-size: 0.92rem;
-    }
-
     h1 {
-      font-size: clamp(2.4rem, 5vw, 4.2rem);
-      line-height: 0.95;
-      letter-spacing: -0.05em;
-      margin-bottom: 0.8rem;
-      max-width: 12ch;
+      margin-top: 0;
+      font-size: 28px;
     }
-
-    .subtle { color: var(--muted); }
-
-    .mini-grid {
-      display: grid;
-      gap: 0.85rem;
+    p {
+      color: #666;
+      margin-bottom: 20px;
     }
-
-    .mini {
-      background: white;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      box-shadow: var(--soft);
-      padding: 1rem;
-    }
-
-    .mini strong {
-      display: block;
-      margin-bottom: 0.35rem;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-      margin: 1rem 0;
-    }
-
-    .stat {
-      background: white;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      box-shadow: var(--soft);
-      padding: 1rem;
-    }
-
-    .stat strong {
-      display: block;
-      color: var(--primary);
-      font-size: 1.45rem;
-      letter-spacing: -0.03em;
-    }
-
-    .section { padding-top: 1rem; }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-      margin-bottom: 1rem;
-    }
-
-    .chip {
-      padding: 0.5rem 0.75rem;
-      border-radius: 999px;
-      background: rgba(79,70,229,0.08);
-      color: var(--primary);
-      font-size: 0.86rem;
-      font-weight: 800;
-    }
-
-    .toolbar {
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr auto auto;
-      gap: 0.8rem;
-      align-items: end;
-      margin-bottom: 1rem;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 0.45rem;
-      font-weight: 800;
-      color: #334155;
-    }
-
-    input, select {
+    table {
       width: 100%;
-      border-radius: 14px;
-      border: 1.5px solid rgba(99,102,241,0.18);
-      background: white;
-      padding: 0.9rem 1rem;
-      color: var(--text);
-      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+      border-collapse: collapse;
+      margin-top: 20px;
     }
-
-    input:focus, select:focus {
-      outline: none;
-      border-color: rgba(79,70,229,0.45);
-      box-shadow: 0 0 0 4px rgba(79,70,229,0.08);
-    }
-
-    .table-wrap {
-      overflow: auto;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: white;
-    }
-
-    table { width: 100%; border-collapse: collapse; min-width: 760px; }
     th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
       text-align: left;
-      padding: 0.95rem;
-      border-bottom: 1px solid var(--line);
-      vertical-align: top;
     }
-
-    th { background: #f8faff; font-size: 0.92rem; }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.35rem 0.62rem;
-      border-radius: 999px;
-      background: #f1f5f9;
-      font-size: 0.82rem;
-      font-weight: 800;
-      color: #334155;
+    th {
+      background: #4f46e5;
+      color: white;
     }
-
-    .row-actions {
+    button {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .delete {
+      background: #dc2626;
+      color: white;
+    }
+    .topbar {
       display: flex;
-      gap: 0.45rem;
+      gap: 10px;
       flex-wrap: wrap;
+      margin-bottom: 10px;
     }
-
-    .footer {
-      text-align: center;
-      color: var(--muted);
-      padding-top: 1.6rem;
-    }
-
-    @media (max-width: 900px) {
-      .hero { grid-template-columns: 1fr; }
-      .stats { grid-template-columns: 1fr; }
-      .toolbar { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 700px) {
-      .nav { flex-direction: column; align-items: flex-start; }
-      h1 { max-width: none; }
+    .refresh {
+      background: #4f46e5;
+      color: white;
     }
   </style>
 </head>
 <body>
-  <header class="header">
-    <div class="container nav">
-      <div class="brand">
-        <div class="brand-mark">🗂️</div>
-        <div>Teacher Pass Admin</div>
-      </div>
-      <div class="nav-actions">
-        <a class="btn btn-secondary" href="./index.html">Open Teacher Page</a>
-        <button class="btn btn-secondary" type="button" onclick="refreshData()">Refresh</button>
-        <button class="btn btn-secondary" type="button" onclick="exportCsv()">Export CSV</button>
-        <button class="btn btn-danger" type="button" onclick="clearAll()">Clear Requests</button>
-      </div>
+  <div class="wrap">
+    <h1>Admin - Requests</h1>
+    <p>All teacher requests show here.</p>
+
+    <div class="topbar">
+      <button class="refresh" onclick="loadRequests()">Refresh</button>
     </div>
-  </header>
 
-  <main class="page">
-    <div class="container">
-      <section class="hero">
-        <div class="card">
-          <div class="eyebrow">Admin dashboard</div>
-          <h1>Manage teacher pass requests.</h1>
-          <p class="subtle">This is your clean backend view. See every request, search fast, export if needed, and mark them printed.</p>
-        </div>
-        <div class="card">
-          <div class="mini-grid">
-            <div class="mini">
-              <strong>Simple queue</strong>
-              <div class="subtle">Everything comes into one clean list.</div>
-            </div>
-            <div class="mini">
-              <strong>Fast cleanup</strong>
-              <div class="subtle">Delete individual requests or clear them all once printed.</div>
-            </div>
-            <div class="mini">
-              <strong>Teacher-friendly</strong>
-              <div class="subtle">The teacher page stays simple while you manage everything here.</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <div class="stats">
-        <div class="stat"><strong id="statOpen">0</strong><span>open requests</span></div>
-        <div class="stat"><strong id="statQty">0</strong><span>total quantity</span></div>
-        <div class="stat"><strong id="statTeachers">0</strong><span>teachers in queue</span></div>
-      </div>
-
-      <section class="section">
-        <div class="card">
-          <div class="card-header">
-            <div>
-              <h2>Open Requests</h2>
-              <div class="subtle">Everything waiting to be printed.</div>
-            </div>
-            <div class="chip">Live Queue</div>
-          </div>
-
-          <div class="toolbar">
-            <div class="form-group">
-              <label for="searchBox">Search</label>
-              <input id="searchBox" type="text" placeholder="Search teacher or room" oninput="renderRequests()" />
-            </div>
-            <div class="form-group">
-              <label for="sortBy">Sort</label>
-              <select id="sortBy" onchange="renderRequests()">
-                <option value="newest">Newest first</option>
-                <option value="oldest">Oldest first</option>
-                <option value="teacher">Teacher A-Z</option>
-                <option value="room">Room A-Z</option>
-              </select>
-            </div>
-            <button class="btn btn-secondary" type="button" onclick="copySummary()">Copy Summary</button>
-            <div></div>
-          </div>
-
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Teacher</th>
-                  <th>Room</th>
-                  <th>Qty</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="requestTable"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <div class="footer">Admin dashboard for your teacher pass site.</div>
-    </div>
-  </main>
+    <table>
+      <thead>
+        <tr>
+          <th>Teacher</th>
+          <th>Room</th>
+          <th>Qty</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody id="table"></tbody>
+    </table>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
@@ -402,164 +93,51 @@
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdtZ294cGhvaGR4amZwdHRhbnBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzODg3NDYsImV4cCI6MjA5MTk2NDc0Nn0.w9MkUHwUCuyjetTHl7sJ2848PayiPwbaEebO4oO1mmA'
     );
 
-    let currentRequests = [];
-
-    document.addEventListener('DOMContentLoaded', async () => {
-      await loadRequests();
-    });
-
     async function loadRequests() {
       const { data, error } = await supabase
         .from('requests')
         .select('*')
         .order('id', { ascending: false });
 
-      if (error) {
-        console.error(error);
-        alert(error.message);
-        return;
-      }
-
-      currentRequests = Array.isArray(data) ? data : [];
-      renderRequests();
-      updateStats();
-    }
-
-    function renderRequests() {
-      const body = document.getElementById('requestTable');
-      const search = document.getElementById('searchBox').value.trim().toLowerCase();
-      const sortBy = document.getElementById('sortBy').value;
-
-      let rows = [...currentRequests].filter(item => {
-        const haystack = [item.teacher, item.room]
-          .map(value => String(value || ''))
-          .join(' ')
-          .toLowerCase();
-        return !search || haystack.includes(search);
-      });
-
-      rows.sort((a, b) => {
-        if (sortBy === 'oldest') return Number(a.id) - Number(b.id);
-        if (sortBy === 'teacher') return String(a.teacher || '').localeCompare(String(b.teacher || ''));
-        if (sortBy === 'room') return String(a.room || '').localeCompare(String(b.room || ''));
-        return Number(b.id) - Number(a.id);
-      });
-
-      if (!rows.length) {
-        body.innerHTML = '<tr><td colspan="4" style="padding:1.2rem; text-align:center; color:#667085;">No matching requests.</td></tr>';
-        return;
-      }
-
-      body.innerHTML = rows.map(item => `
-        <tr>
-          <td><strong>${escapeHtml(item.teacher)}</strong></td>
-          <td>${escapeHtml(item.room)}</td>
-          <td><span class="pill">Qty ${escapeHtml(item.quantity || 1)}</span></td>
-          <td>
-            <div class="row-actions">
-              <button class="btn btn-secondary" type="button" onclick="duplicateRequest(${Number(item.id)})">Duplicate</button>
-              <button class="btn btn-success" type="button" onclick="deleteRequest(${Number(item.id)})">Printed</button>
-            </div>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    async function duplicateRequest(id) {
-      const original = currentRequests.find(item => Number(item.id) === Number(id));
-      if (!original) return;
-
-      const { error } = await supabase.from('requests').insert([{
-        teacher: original.teacher,
-        room: original.room,
-        quantity: original.quantity || 1
-      }]);
+      const table = document.getElementById('table');
+      table.innerHTML = '';
 
       if (error) {
         console.error(error);
-        alert(error.message);
+        alert('Load failed: ' + error.message);
         return;
       }
 
-      await loadRequests();
+      if (!data || !data.length) {
+        table.innerHTML = '<tr><td colspan="4">No requests yet.</td></tr>';
+        return;
+      }
+
+      data.forEach(r => {
+        table.innerHTML += `
+          <tr>
+            <td>${escapeHtml(r.teacher)}</td>
+            <td>${escapeHtml(r.room)}</td>
+            <td>${escapeHtml(String(r.quantity || 1))}</td>
+            <td><button class="delete" onclick="deleteRequest(${r.id})">X</button></td>
+          </tr>
+        `;
+      });
     }
 
     async function deleteRequest(id) {
-      const { error } = await supabase.from('requests').delete().eq('id', id);
+      const { error } = await supabase
+        .from('requests')
+        .delete()
+        .eq('id', id);
+
       if (error) {
         console.error(error);
-        alert(error.message);
-        return;
-      }
-      await loadRequests();
-    }
-
-    async function clearAll() {
-      if (!currentRequests.length) return;
-      if (!confirm('Clear all open requests?')) return;
-
-      const ids = currentRequests.map(item => item.id);
-      const { error } = await supabase.from('requests').delete().in('id', ids);
-      if (error) {
-        console.error(error);
-        alert(error.message);
+        alert('Delete failed: ' + error.message);
         return;
       }
 
-      await loadRequests();
-    }
-
-    async function refreshData() {
-      await loadRequests();
-    }
-
-    function updateStats() {
-      const qty = currentRequests.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
-      const teachers = new Set(currentRequests.map(item => item.teacher)).size;
-      document.getElementById('statOpen').textContent = currentRequests.length;
-      document.getElementById('statQty').textContent = qty;
-      document.getElementById('statTeachers').textContent = teachers;
-    }
-
-    async function exportCsv() {
-      const headers = ['Teacher', 'Room', 'Quantity'];
-      const csv = [headers.join(',')].concat(currentRequests.map(item => [
-        csvSafe(item.teacher),
-        csvSafe(item.room),
-        csvSafe(item.quantity || 1)
-      ].join(','))).join('\\n');
-
-      downloadFile('teacher-pass-admin-export.csv', 'text/csv;charset=utf-8;', csv);
-    }
-
-    async function copySummary() {
-      const text = currentRequests.length
-        ? currentRequests.map(item => `${item.teacher} | Room ${item.room} | Qty ${item.quantity || 1}`).join('\\n')
-        : 'No open requests.';
-
-      try {
-        await navigator.clipboard.writeText(text);
-        alert('Summary copied.');
-      } catch (error) {
-        console.error(error);
-        alert('Could not copy automatically.');
-      }
-    }
-
-    function downloadFile(filename, type, content) {
-      const blob = new Blob([content], { type });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    }
-
-    function csvSafe(value) {
-      return `\"${String(value ?? '').replace(/\"/g, '\"\"')}\"`;
+      loadRequests();
     }
 
     function escapeHtml(value) {
@@ -570,6 +148,8 @@
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
     }
+
+    loadRequests();
   </script>
 </body>
 </html>
