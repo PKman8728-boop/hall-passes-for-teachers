@@ -425,8 +425,8 @@
         throw new Error('Supabase library did not load. Check your internet connection or script tag.');
       }
 
-      const urlPlaceholder = SUPABASE_URL.includes('PASTE_YOUR_SUPABASE_URL_HERE');
-      const keyPlaceholder = SUPABASE_KEY.includes('PASTE_YOUR_SUPABASE_ANON_KEY_HERE');
+      const urlPlaceholder = SUPABASE_URL.includes('https://gmgoxphohdxjfpttanpq.supabase.co');
+      const keyPlaceholder = SUPABASE_KEY.includes('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdtZ294cGhvaGR4amZwdHRhbnBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzODg3NDYsImV4cCI6MjA5MTk2NDc0Nn0.w9MkUHwUCuyjetTHl7sJ2848PayiPwbaEebO4oO1mmA');
 
       if (urlPlaceholder || keyPlaceholder || !SUPABASE_URL || !SUPABASE_KEY) {
         configWarning.textContent = 'Add your real Supabase URL and anon key in this file before using the admin page.';
