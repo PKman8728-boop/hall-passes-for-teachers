@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Teacher Pass Admin</title>
-  <meta name="description" content="Admin page for managing teacher pass requests." />
+  <meta name="description" content="Admin page for managing teacher pass requests and synced colors." />
   <style>
     :root {
       --bg: #f4f7ff;
@@ -18,14 +18,12 @@
       --danger: #dc2626;
       --warning: #d97706;
       --border: rgba(99, 102, 241, 0.16);
-      --shadow: 0 24px 60px rgba(79, 70, 229, 0.14);
       --shadow-soft: 0 10px 28px rgba(30, 41, 59, 0.08);
       --radius-xl: 28px;
       --max-width: 1200px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       font-family: Inter, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       color: var(--text);
@@ -35,272 +33,94 @@
       min-height: 100vh;
       line-height: 1.6;
     }
-
     button, input, select { font: inherit; }
     .container { width: min(calc(100% - 2rem), var(--max-width)); margin: 0 auto; }
-
     .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      backdrop-filter: blur(14px);
-      background: rgba(251, 253, 255, 0.88);
-      border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+      position: sticky; top: 0; z-index: 50; backdrop-filter: blur(14px);
+      background: rgba(251, 253, 255, 0.88); border-bottom: 1px solid rgba(99, 102, 241, 0.1);
     }
-
     .nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      padding: 1rem 0;
-      flex-wrap: wrap;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      padding: 1rem 0; flex-wrap: wrap;
     }
-
     .brand {
-      display: flex;
-      align-items: center;
-      gap: 0.85rem;
-      font-weight: 900;
-      letter-spacing: -0.03em;
+      display: flex; align-items: center; gap: 0.85rem; font-weight: 900; letter-spacing: -0.03em;
       font-size: 1.05rem;
     }
-
     .brand-mark {
-      width: 46px;
-      height: 46px;
-      border-radius: 16px;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(135deg, var(--primary), var(--primary-2));
-      color: white;
-      box-shadow: var(--shadow-soft);
-      font-size: 1.05rem;
+      width: 46px; height: 46px; border-radius: 16px; display: grid; place-items: center;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2)); color: white;
+      box-shadow: var(--shadow-soft); font-size: 1.05rem;
     }
-
-    .nav-actions {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
+    .nav-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
     .page { padding: 2rem 0 3rem; }
-
-    .hero {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 1rem;
-      align-items: start;
-      margin-bottom: 1rem;
-    }
-
+    .hero { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 1rem; align-items: start; margin-bottom: 1rem; }
     .card {
-      background: rgba(255,255,255,0.92);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-soft);
-      padding: 1.35rem;
+      background: rgba(255,255,255,0.94); border: 1px solid var(--border); border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-soft); padding: 1.35rem;
     }
-
     .hero h1 {
-      font-size: clamp(2.2rem, 5vw, 4rem);
-      line-height: 0.95;
-      letter-spacing: -0.05em;
-      margin-bottom: 0.9rem;
+      font-size: clamp(2.2rem, 5vw, 4rem); line-height: 0.95; letter-spacing: -0.05em; margin-bottom: 0.9rem;
     }
-
     .subtle { color: var(--muted); }
-
     .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      padding: 0.52rem 0.9rem;
-      border-radius: 999px;
-      background: rgba(79, 70, 229, 0.08);
-      color: var(--primary);
-      font-weight: 800;
-      font-size: 0.92rem;
-      margin-bottom: 1rem;
+      display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.52rem 0.9rem; border-radius: 999px;
+      background: rgba(79, 70, 229, 0.08); color: var(--primary); font-weight: 800; font-size: 0.92rem; margin-bottom: 1rem;
     }
-
     .btn {
-      border: none;
-      border-radius: 14px;
-      padding: 0.9rem 1rem;
-      font-weight: 800;
-      cursor: pointer;
-      transition: transform 0.18s ease;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      border: none; border-radius: 14px; padding: 0.9rem 1rem; font-weight: 800; cursor: pointer;
+      transition: transform 0.18s ease; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;
     }
-
     .btn:hover { transform: translateY(-1px); }
-    .btn-primary {
-      color: white;
-      background: linear-gradient(135deg, var(--primary), var(--primary-2));
-      box-shadow: var(--shadow-soft);
-    }
-    .btn-secondary {
-      background: rgba(79, 70, 229, 0.08);
-      color: var(--primary);
-    }
-    .btn-danger {
-      background: rgba(220, 38, 38, 0.1);
-      color: var(--danger);
-    }
-    .btn-success {
-      background: linear-gradient(135deg, var(--success), #22c55e);
-      color: white;
-    }
-
-    .message {
-      display: none;
-      padding: 1rem;
-      border-radius: 16px;
-      margin-bottom: 1rem;
-      font-weight: 700;
-    }
+    .btn-primary { color: white; background: linear-gradient(135deg, var(--primary), var(--primary-2)); }
+    .btn-secondary { background: rgba(79, 70, 229, 0.08); color: var(--primary); }
+    .btn-danger { background: rgba(220, 38, 38, 0.1); color: var(--danger); }
+    .btn-success { background: linear-gradient(135deg, var(--success), #22c55e); color: white; }
+    .message { display: none; padding: 1rem; border-radius: 16px; margin-bottom: 1rem; font-weight: 700; }
     .message.show { display: block; }
-    .message.info {
-      background: rgba(79, 70, 229, 0.08);
-      color: var(--primary);
-      border: 1px solid rgba(79, 70, 229, 0.16);
+    .message.info { background: rgba(79, 70, 229, 0.08); color: var(--primary); border: 1px solid rgba(79, 70, 229, 0.16); }
+    .message.error { background: rgba(220, 38, 38, 0.08); color: var(--danger); border: 1px solid rgba(220, 38, 38, 0.16); }
+    .message.warning { background: rgba(217, 119, 6, 0.10); color: var(--warning); border: 1px solid rgba(217, 119, 6, 0.18); }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 1rem 0; }
+    .stat { background: #fff; border: 1px solid var(--border); border-radius: 18px; box-shadow: var(--shadow-soft); padding: 1rem; }
+    .stat strong { display: block; font-size: 1.4rem; color: var(--primary); margin-bottom: 0.15rem; letter-spacing: -0.03em; }
+    .toolbar { display: grid; grid-template-columns: 1.2fr 0.8fr 0.8fr auto auto auto; gap: 0.8rem; align-items: end; margin-bottom: 1rem; }
+    .form-group label { display: block; margin-bottom: 0.45rem; font-weight: 800; color: #334155; }
+    .form-group input, .form-group select {
+      width: 100%; border-radius: 14px; border: 1.5px solid rgba(99, 102, 241, 0.18); background: #fff;
+      color: var(--text); padding: 0.85rem 0.95rem;
     }
-    .message.error {
-      background: rgba(220, 38, 38, 0.08);
-      color: var(--danger);
-      border: 1px solid rgba(220, 38, 38, 0.16);
+    .form-group input:focus, .form-group select:focus {
+      outline: none; border-color: rgba(79, 70, 229, 0.48); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.08);
     }
-    .message.warning {
-      background: rgba(217, 119, 6, 0.10);
-      color: var(--warning);
-      border: 1px solid rgba(217, 119, 6, 0.18);
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-      margin: 1rem 0;
-    }
-
-    .stat {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      box-shadow: var(--shadow-soft);
-      padding: 1rem;
-    }
-
-    .stat strong {
-      display: block;
-      font-size: 1.4rem;
-      color: var(--primary);
-      margin-bottom: 0.15rem;
-      letter-spacing: -0.03em;
-    }
-
-    .toolbar {
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr 0.8fr auto auto auto;
-      gap: 0.8rem;
-      align-items: end;
-      margin-bottom: 1rem;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 0.45rem;
-      font-weight: 800;
-      color: #334155;
-    }
-
-    .form-group input,
-    .form-group select {
-      width: 100%;
-      border-radius: 14px;
-      border: 1.5px solid rgba(99, 102, 241, 0.18);
-      background: #fff;
-      color: var(--text);
-      padding: 0.85rem 0.95rem;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus {
-      outline: none;
-      border-color: rgba(79, 70, 229, 0.48);
-      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.08);
-    }
-
-    .table-wrap {
-      overflow: auto;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      background: white;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 900px;
-    }
-
-    th, td {
-      text-align: left;
-      padding: 0.9rem;
-      border-bottom: 1px solid var(--border);
-      vertical-align: top;
-    }
-
-    th {
-      background: #f8faff;
-      font-size: 0.92rem;
-    }
-
+    .table-wrap { overflow: auto; border: 1px solid var(--border); border-radius: 18px; background: white; }
+    table { width: 100%; border-collapse: collapse; min-width: 900px; }
+    th, td { text-align: left; padding: 0.9rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { background: #f8faff; font-size: 0.92rem; }
     .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.38rem;
-      padding: 0.34rem 0.64rem;
-      border-radius: 999px;
-      background: #f1f5f9;
-      color: #334155;
-      font-size: 0.82rem;
-      font-weight: 800;
-      white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 0.38rem; padding: 0.34rem 0.64rem; border-radius: 999px;
+      background: #f1f5f9; color: #334155; font-size: 0.82rem; font-weight: 800; white-space: nowrap;
     }
-
-    .row-actions {
-      display: flex;
-      gap: 0.45rem;
-      flex-wrap: wrap;
+    .row-actions { display: flex; gap: 0.45rem; flex-wrap: wrap; }
+    .empty { text-align: center; color: var(--muted); padding: 2rem 1rem; }
+    .color-manager {
+      display: grid; grid-template-columns: 1.2fr 160px auto; gap: 0.8rem; align-items: end; margin-bottom: 1rem;
     }
-
-    .empty {
-      text-align: center;
-      color: var(--muted);
-      padding: 2rem 1rem;
+    .color-list { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+    .color-chip {
+      display: inline-flex; align-items: center; gap: 0.55rem; border: 1px solid var(--border); background: white;
+      border-radius: 999px; padding: 0.55rem 0.75rem; box-shadow: var(--shadow-soft);
     }
-
-    .footer {
-      text-align: center;
-      color: var(--muted);
-      padding-top: 1.5rem;
-    }
-
+    .dot { width: 14px; height: 14px; border-radius: 50%; display: inline-block; border: 2px solid rgba(0,0,0,0.08); }
+    .footer { text-align: center; color: var(--muted); padding-top: 1.5rem; }
     @media (max-width: 1100px) {
-      .toolbar { grid-template-columns: 1fr 1fr; }
+      .toolbar, .color-manager { grid-template-columns: 1fr 1fr; }
       .stats { grid-template-columns: repeat(2, 1fr); }
       .hero { grid-template-columns: 1fr; }
     }
-
     @media (max-width: 700px) {
       .nav { flex-direction: column; align-items: flex-start; }
-      .toolbar, .stats { grid-template-columns: 1fr; }
+      .toolbar, .stats, .color-manager { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -326,18 +146,34 @@
       <section class="hero">
         <div class="card">
           <div class="eyebrow">✨ Separate admin site</div>
-          <h1>Manage pass requests in one place.</h1>
-          <p class="subtle">This page shows your live requests from Supabase. You can search, filter, export, and mark items printed.</p>
+          <h1>Manage pass requests and colors.</h1>
+          <p class="subtle">This page shows your live requests from Supabase and lets you manage the synced teacher color list.</p>
         </div>
         <div class="card">
           <strong style="font-size:1.05rem; display:block; margin-bottom:0.45rem;">How it works</strong>
-          <p class="subtle">Teachers submit requests on the main page. This admin page reads the same Supabase table and updates from anywhere.</p>
+          <p class="subtle">Teachers submit requests on the main page. Colors now come from a shared Supabase table so every device sees the same list.</p>
         </div>
       </section>
 
       <div id="configWarning" class="message warning"></div>
       <div id="runtimeError" class="message error"></div>
       <div id="runtimeInfo" class="message info"></div>
+
+      <section class="card" style="margin-bottom:1rem;">
+        <h2 style="margin-bottom:0.8rem; letter-spacing:-0.04em;">Manage Colors</h2>
+        <div class="color-manager">
+          <div class="form-group">
+            <label for="newColorName">Color name</label>
+            <input type="text" id="newColorName" placeholder="Example: Royal Blue" />
+          </div>
+          <div class="form-group">
+            <label for="newColorHex">Color</label>
+            <input type="color" id="newColorHex" value="#4f46e5" style="height:50px; padding:0.2rem;" />
+          </div>
+          <button class="btn btn-primary" type="button" onclick="addColor()">Add color</button>
+        </div>
+        <div id="colorList" class="color-list"></div>
+      </section>
 
       <section class="stats">
         <div class="stat"><strong id="statOpen">0</strong><span class="subtle">Open requests</span></div>
@@ -398,39 +234,37 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const SUPABASE_URL = 'https://supabase.com/dashboard/project/gmgoxphohdxjfpttanpq';
-    const SUPABASE_KEY = 'sb_publishable_gRHVoBEIXexuY5Qb3klZcA__Py5YDXO';
+    const SUPABASE_URL = 'https://YOUR-PROJECT-REF.supabase.co';
+    const SUPABASE_KEY = 'PASTE_YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY_HERE';
     const REQUESTS_TABLE = 'requests';
-    const COLOR_KEY = 'filamentColors';
+    const COLORS_TABLE = 'colors';
 
     let supabaseClient = null;
     let currentRequests = [];
+    let currentColors = [];
 
     document.addEventListener('DOMContentLoaded', async () => {
       try {
-        populateColorFilter();
         setupClient();
-        await loadRequests();
+        await Promise.all([loadColors(), loadRequests()]);
       } catch (error) {
         handleError(error, 'The admin page could not finish loading.');
       }
     });
 
     function setupClient() {
-      const configWarning = document.getElementById('configWarning');
       hideMessage('runtimeError');
       hideMessage('runtimeInfo');
 
       if (!window.supabase || typeof window.supabase.createClient !== 'function') {
-        throw new Error('Supabase library did not load. Check your internet connection or script tag.');
+        throw new Error('Supabase library did not load.');
       }
 
-      const urlPlaceholder = SUPABASE_URL.includes('https://gmgoxphohdxjfpttanpq.supabase.co');
-      const keyPlaceholder = SUPABASE_KEY.includes('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdtZ294cGhvaGR4amZwdHRhbnBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzODg3NDYsImV4cCI6MjA5MTk2NDc0Nn0.w9MkUHwUCuyjetTHl7sJ2848PayiPwbaEebO4oO1mmA');
+      const urlPlaceholder = SUPABASE_URL.includes('YOUR-PROJECT-REF');
+      const keyPlaceholder = SUPABASE_KEY.includes('PASTE_YOUR_SUPABASE');
 
       if (urlPlaceholder || keyPlaceholder || !SUPABASE_URL || !SUPABASE_KEY) {
-        configWarning.textContent = 'Add your real Supabase URL and anon key in this file before using the admin page.';
-        showMessage('configWarning');
+        showMessage('configWarning', 'Add your real Supabase project URL and publishable or anon key in this file before using the admin page.');
         renderEmpty('Add your Supabase URL and key to start loading requests.');
         updateStats([]);
         return;
@@ -440,37 +274,102 @@
       supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     }
 
-    function getColors() {
-      try {
-        return JSON.parse(localStorage.getItem(COLOR_KEY)) || [];
-      } catch {
-        return [];
+    async function loadColors() {
+      if (!supabaseClient) return;
+      const { data, error } = await supabaseClient
+        .from(COLORS_TABLE)
+        .select('*')
+        .order('name', { ascending: true });
+
+      if (error) throw new Error(error.message || 'Could not load colors.');
+      currentColors = Array.isArray(data) ? data : [];
+      populateColorFilter();
+      renderColorList();
+    }
+
+    async function addColor() {
+      if (!supabaseClient) return;
+      const name = document.getElementById('newColorName').value.trim();
+      const hex = document.getElementById('newColorHex').value;
+      if (!name) {
+        showMessage('runtimeError', 'Enter a color name first.');
+        return;
       }
+
+      const duplicate = currentColors.some(color => String(color.name).toLowerCase() === name.toLowerCase());
+      if (duplicate) {
+        showMessage('runtimeError', 'That color name already exists.');
+        return;
+      }
+
+      const { error } = await supabaseClient.from(COLORS_TABLE).insert([{ name, hex }]);
+      if (error) {
+        handleError(error, 'Could not add color.');
+        return;
+      }
+
+      document.getElementById('newColorName').value = '';
+      document.getElementById('newColorHex').value = '#4f46e5';
+      await loadColors();
+      showInfo('Color added.');
+    }
+
+    async function deleteColor(id) {
+      if (!supabaseClient) return;
+      const color = currentColors.find(item => Number(item.id) === Number(id));
+      if (!color) return;
+
+      const inUse = currentRequests.some(item => item.color === color.name);
+      if (inUse) {
+        showMessage('runtimeError', 'That color is being used by an open request. Mark those printed first.');
+        return;
+      }
+
+      const { error } = await supabaseClient.from(COLORS_TABLE).delete().eq('id', id);
+      if (error) {
+        handleError(error, 'Could not delete color.');
+        return;
+      }
+
+      await loadColors();
+      showInfo('Color deleted.');
+    }
+
+    function renderColorList() {
+      const container = document.getElementById('colorList');
+      if (!container) return;
+
+      if (!currentColors.length) {
+        container.innerHTML = '<div class="subtle">No colors yet.</div>';
+        return;
+      }
+
+      container.innerHTML = currentColors.map(color => `
+        <div class="color-chip">
+          <span class="dot" style="background:${escapeHtml(color.hex)}"></span>
+          <span>${escapeHtml(color.name)}</span>
+          <button class="btn btn-danger" type="button" style="padding:0.4rem 0.7rem;" onclick="deleteColor(${Number(color.id)})">Delete</button>
+        </div>
+      `).join('');
     }
 
     async function loadRequests() {
       if (!supabaseClient) return;
-
       const { data, error } = await supabaseClient
         .from(REQUESTS_TABLE)
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) {
-        throw new Error(error.message || 'Could not load requests from Supabase.');
-      }
-
+      if (error) throw new Error(error.message || 'Could not load requests from Supabase.');
       currentRequests = Array.isArray(data) ? data : [];
       renderTable();
       updateStats(currentRequests);
-      showInfo(`Loaded ${currentRequests.length} request${currentRequests.length === 1 ? '' : 's'}.`);
     }
 
     function populateColorFilter() {
       const filter = document.getElementById('colorFilter');
       const current = filter.value;
-      const colors = getColors();
-      filter.innerHTML = '<option value="">All colors</option>' + colors.map(c => `<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)}</option>`).join('');
+      filter.innerHTML = '<option value="">All colors</option>' + currentColors.map(c => `<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)}</option>`).join('');
       filter.value = current;
     }
 
@@ -481,15 +380,9 @@
       const sortBy = document.getElementById('sortBy').value;
 
       let rows = [...currentRequests];
-
       rows = rows.filter(item => {
-        const haystack = [item.teacher, item.room, item.color, item.notes, item.created_at]
-          .map(value => String(value || ''))
-          .join(' ')
-          .toLowerCase();
-        const searchMatch = !search || haystack.includes(search);
-        const colorMatch = !color || item.color === color;
-        return searchMatch && colorMatch;
+        const haystack = [item.teacher, item.room, item.color, item.notes, item.created_at].map(value => String(value || '')).join(' ').toLowerCase();
+        return (!search || haystack.includes(search)) && (!color || item.color === color);
       });
 
       rows.sort((a, b) => {
@@ -526,66 +419,34 @@
       if (!supabaseClient) return;
       const original = currentRequests.find(item => Number(item.id) === Number(id));
       if (!original) return;
-
-      const payload = {
-        teacher: original.teacher,
-        room: original.room,
-        color: original.color,
-        quantity: original.quantity,
-        notes: original.notes || ''
-      };
-
+      const payload = { teacher: original.teacher, room: original.room, color: original.color, quantity: original.quantity, notes: original.notes || '' };
       const { error } = await supabaseClient.from(REQUESTS_TABLE).insert([payload]);
-      if (error) {
-        handleError(error, 'Could not duplicate request.');
-        return;
-      }
-
+      if (error) return handleError(error, 'Could not duplicate request.');
       await loadRequests();
     }
 
     async function markPrinted(id) {
       if (!supabaseClient) return;
-      const { error } = await supabaseClient
-        .from(REQUESTS_TABLE)
-        .delete()
-        .eq('id', id);
-
-      if (error) {
-        handleError(error, 'Could not mark request as printed.');
-        return;
-      }
-
+      const { error } = await supabaseClient.from(REQUESTS_TABLE).delete().eq('id', id);
+      if (error) return handleError(error, 'Could not mark request as printed.');
       await loadRequests();
     }
 
     async function markAllPrinted() {
-      if (!supabaseClient) return;
-      if (!currentRequests.length) return;
+      if (!supabaseClient || !currentRequests.length) return;
       if (!confirm('Mark all requests as printed and remove them?')) return;
-
       const ids = currentRequests.map(item => item.id);
-      const { error } = await supabaseClient
-        .from(REQUESTS_TABLE)
-        .delete()
-        .in('id', ids);
-
-      if (error) {
-        handleError(error, 'Could not clear all requests.');
-        return;
-      }
-
+      const { error } = await supabaseClient.from(REQUESTS_TABLE).delete().in('id', ids);
+      if (error) return handleError(error, 'Could not clear all requests.');
       await loadRequests();
     }
 
-    async function clearAllRequests() {
-      await markAllPrinted();
-    }
+    async function clearAllRequests() { await markAllPrinted(); }
 
     async function refreshData() {
       try {
-        populateColorFilter();
-        await loadRequests();
+        await Promise.all([loadColors(), loadRequests()]);
+        showInfo('Refreshed.');
       } catch (error) {
         handleError(error, 'Refresh failed.');
       }
@@ -604,27 +465,15 @@
     function exportCsv() {
       const rows = currentRequests || [];
       const headers = ['Teacher', 'Room', 'Color', 'Quantity', 'Submitted Date', 'Notes'];
-      const csv = [headers.join(',')].concat(rows.map(item => [
-        csvSafe(item.teacher),
-        csvSafe(item.room),
-        csvSafe(item.color),
-        csvSafe(item.quantity),
-        csvSafe(formatDate(item.created_at)),
-        csvSafe(item.notes || '')
-      ].join(','))).join('\n');
+      const csv = [headers.join(',')].concat(rows.map(item => [csvSafe(item.teacher), csvSafe(item.room), csvSafe(item.color), csvSafe(item.quantity), csvSafe(formatDate(item.created_at)), csvSafe(item.notes || '')].join(','))).join('\n');
       downloadFile('teacher-pass-admin-export.csv', 'text/csv;charset=utf-8;', csv);
     }
 
-    function exportJson() {
-      downloadFile('teacher-pass-admin-export.json', 'application/json;charset=utf-8;', JSON.stringify(currentRequests || [], null, 2));
-    }
+    function exportJson() { downloadFile('teacher-pass-admin-export.json', 'application/json;charset=utf-8;', JSON.stringify(currentRequests || [], null, 2)); }
 
     async function copyRequests() {
       const rows = currentRequests || [];
-      const text = rows.length
-        ? rows.map(item => `${item.teacher} | Room ${item.room} | ${item.color} | Qty ${item.quantity}${item.notes ? ' | ' + item.notes : ''}`).join('\n')
-        : 'No open requests.';
-
+      const text = rows.length ? rows.map(item => `${item.teacher} | Room ${item.room} | ${item.color} | Qty ${item.quantity}${item.notes ? ' | ' + item.notes : ''}`).join('\n') : 'No open requests.';
       try {
         await navigator.clipboard.writeText(text);
         showInfo('Request summary copied.');
@@ -637,13 +486,11 @@
       if (!value) return '';
       const date = new Date(value);
       if (Number.isNaN(date.getTime())) return String(value);
-      const datePart = date.toLocaleDateString([], { month: 'short', day: 'numeric' });
-      const timePart = date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-      return `${datePart} ${timePart}`;
+      return `${date.toLocaleDateString([], { month: 'short', day: 'numeric' })} ${date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;
     }
 
     function getColorHex(colorName) {
-      const color = getColors().find(item => item.name === colorName);
+      const color = currentColors.find(item => item.name === colorName);
       return color ? color.hex : '#94a3b8';
     }
 
@@ -659,57 +506,26 @@
       URL.revokeObjectURL(objectUrl);
     }
 
-    function csvSafe(value) {
-      return `"${String(value ?? '').replace(/"/g, '""')}"`;
-    }
-
-    function escapeHtml(value) {
-      return String(value ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
-
-    function renderEmpty(message) {
-      document.getElementById('tableBody').innerHTML = `<tr><td colspan="7" class="empty">${escapeHtml(message)}</td></tr>`;
-    }
-
-    function showMessage(id, text) {
-      const element = document.getElementById(id);
-      if (!element) return;
-      if (typeof text === 'string') element.textContent = text;
-      element.classList.add('show');
-    }
-
-    function hideMessage(id) {
-      const element = document.getElementById(id);
-      if (!element) return;
-      element.classList.remove('show');
-    }
-
-    function showInfo(text) {
-      showMessage('runtimeInfo', text);
-      setTimeout(() => hideMessage('runtimeInfo'), 2200);
-    }
-
+    function csvSafe(value) { return `"${String(value ?? '').replace(/"/g, '""')}"`; }
+    function escapeHtml(value) { return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+    function renderEmpty(message) { document.getElementById('tableBody').innerHTML = `<tr><td colspan="7" class="empty">${escapeHtml(message)}</td></tr>`; }
+    function showMessage(id, text) { const el = document.getElementById(id); if (!el) return; if (typeof text === 'string') el.textContent = text; el.classList.add('show'); }
+    function hideMessage(id) { const el = document.getElementById(id); if (el) el.classList.remove('show'); }
+    function showInfo(text) { showMessage('runtimeInfo', text); setTimeout(() => hideMessage('runtimeInfo'), 2200); }
     function handleError(error, fallbackText) {
       console.error(error);
-      const detail = error && error.message ? error.message : fallbackText;
-      showMessage('runtimeError', `${fallbackText} ${detail}`.trim());
+      showMessage('runtimeError', `${fallbackText} ${error && error.message ? error.message : ''}`.trim());
       renderEmpty('Could not load requests. Check your Supabase settings and browser console.');
       updateStats([]);
     }
-
     function runAdminTests() {
       console.assert(csvSafe('A"B') === '"A""B"', 'csvSafe should escape quotes');
-      console.assert(escapeHtml('<tag>') === '&lt;tag&gt;', 'escapeHtml should escape angle brackets');
+      console.assert(escapeHtml('<tag>') === '&lt;tag&gt;', 'escapeHtml should escape tags');
       console.assert(formatDate('2025-01-02T10:30:00Z').length > 0, 'formatDate should return text');
-      console.assert(getColorHex('Missing Color') === '#94a3b8', 'getColorHex should return fallback color');
+      console.assert(getColorHex('Missing') === '#94a3b8', 'getColorHex should fallback');
     }
-
     runAdminTests();
   </script>
 </body>
 </html>
+
