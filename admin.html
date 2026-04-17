@@ -1,63 +1,591 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Admin</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teacher Pass Admin</title>
+  <meta name="description" content="Admin page for teacher pass requests and colors." />
+  <style>
+    :root {
+      --bg: #f4f7ff;
+      --bg2: #fbfcff;
+      --card: rgba(255,255,255,0.94);
+      --text: #1f2937;
+      --muted: #667085;
+      --primary: #4f46e5;
+      --primary2: #7c3aed;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --line: rgba(99,102,241,0.16);
+      --shadow: 0 22px 55px rgba(79,70,229,0.14);
+      --soft: 0 10px 24px rgba(15,23,42,0.08);
+      --radius: 24px;
+      --max: 1180px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(79,70,229,0.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(124,58,237,0.10), transparent 28%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg2) 65%, #eef3ff 100%);
+      min-height: 100vh;
+      line-height: 1.55;
+    }
+
+    button, input, select, textarea { font: inherit; }
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(calc(100% - 2rem), var(--max)); margin: 0 auto; }
+
+    .header {
+      position: sticky; top: 0; z-index: 20;
+      background: rgba(251,253,255,0.86);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(99,102,241,0.08);
+    }
+
+    .nav {
+      display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; padding: 1rem 0;
+    }
+
+    .brand {
+      display: flex; align-items: center; gap: 0.8rem; font-weight: 900; letter-spacing: -0.03em;
+    }
+
+    .brand-mark {
+      width: 46px; height: 46px; border-radius: 16px; display: grid; place-items: center; color: white;
+      background: linear-gradient(135deg, var(--primary), var(--primary2)); box-shadow: var(--soft); font-size: 1.15rem;
+    }
+
+    .nav-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+    .btn {
+      border: none; border-radius: 15px; padding: 0.9rem 1rem; font-weight: 800; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; transition: transform 0.18s ease;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary { color: white; background: linear-gradient(135deg, var(--primary), var(--primary2)); box-shadow: var(--shadow); }
+    .btn-secondary { background: white; color: var(--text); border: 1px solid var(--line); box-shadow: var(--soft); }
+    .btn-success { color: white; background: linear-gradient(135deg, var(--success), #22c55e); }
+    .btn-danger { color: var(--danger); background: rgba(220,38,38,0.10); }
+
+    .page { padding: 2rem 0 3rem; }
+
+    .hero {
+      display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 1rem; align-items: start; margin-bottom: 1rem;
+    }
+
+    .card {
+      background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.35rem;
+    }
+
+    .eyebrow {
+      display: inline-flex; padding: 0.55rem 0.9rem; border-radius: 999px; background: rgba(79,70,229,0.08);
+      border: 1px solid rgba(79,70,229,0.14); color: var(--primary); font-weight: 800; margin-bottom: 1rem; font-size: 0.92rem;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 5vw, 4.2rem); line-height: 0.95; letter-spacing: -0.05em; margin-bottom: 0.8rem;
+    }
+
+    .subtle { color: var(--muted); }
+
+    .stats {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 1rem 0;
+    }
+
+    .stat {
+      background: white; border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--soft); padding: 1rem;
+    }
+
+    .stat strong {
+      display: block; color: var(--primary); font-size: 1.4rem; letter-spacing: -0.03em;
+    }
+
+    .section { padding-top: 1rem; }
+
+    .card-header {
+      display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;
+    }
+
+    .chip {
+      padding: 0.5rem 0.75rem; border-radius: 999px; background: rgba(79,70,229,0.08); color: var(--primary); font-size: 0.86rem; font-weight: 800;
+    }
+
+    .message {
+      display: none; padding: 0.9rem 1rem; border-radius: 14px; margin-bottom: 1rem; font-weight: 700;
+    }
+    .message.show { display: block; }
+    .success { background: rgba(22,163,74,0.10); color: #166534; border: 1px solid rgba(22,163,74,0.18); }
+    .error { background: rgba(220,38,38,0.10); color: #991b1b; border: 1px solid rgba(220,38,38,0.18); }
+
+    .color-row {
+      display: grid; grid-template-columns: 1fr 160px auto; gap: 0.85rem; align-items: end;
+    }
+
+    .form-group label {
+      display: block; margin-bottom: 0.45rem; font-weight: 800; color: #334155;
+    }
+
+    input, select {
+      width: 100%; border-radius: 14px; border: 1.5px solid rgba(99,102,241,0.18); background: white; padding: 0.9rem 1rem;
+      color: var(--text); transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    input:focus, select:focus {
+      outline: none; border-color: rgba(79,70,229,0.45); box-shadow: 0 0 0 4px rgba(79,70,229,0.08);
+    }
+
+    input[type="color"] { padding: 0.25rem; height: 52px; }
+
+    .color-list {
+      display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem;
+    }
+
+    .color-chip {
+      display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.55rem 0.75rem; border-radius: 999px;
+      background: white; border: 1px solid var(--line); box-shadow: var(--soft); font-weight: 800;
+    }
+
+    .dot {
+      width: 14px; height: 14px; border-radius: 50%; display: inline-block; border: 2px solid rgba(0,0,0,0.08);
+    }
+
+    .toolbar {
+      display: grid; grid-template-columns: 1.2fr 0.8fr 0.8fr auto auto; gap: 0.8rem; align-items: end; margin-bottom: 1rem;
+    }
+
+    .table-wrap {
+      overflow: auto; border: 1px solid var(--line); border-radius: 18px; background: white;
+    }
+
+    table { width: 100%; border-collapse: collapse; min-width: 880px; }
+    th, td { text-align: left; padding: 0.9rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { background: #f8faff; font-size: 0.92rem; }
+
+    .pill {
+      display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.62rem; border-radius: 999px;
+      background: #f1f5f9; font-size: 0.82rem; font-weight: 800; color: #334155;
+    }
+
+    .row-actions { display: flex; gap: 0.45rem; flex-wrap: wrap; }
+    .footer { text-align: center; color: var(--muted); padding-top: 1.6rem; }
+
+    @media (max-width: 1080px) {
+      .hero { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .toolbar, .color-row { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 700px) {
+      .nav { flex-direction: column; align-items: flex-start; }
+      .stats, .toolbar, .color-row { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-<h2>Admin Panel</h2>
+  <header class="header">
+    <div class="container nav">
+      <div class="brand">
+        <div class="brand-mark">🗂️</div>
+        <div>Teacher Pass Admin</div>
+      </div>
+      <div class="nav-actions">
+        <a class="btn btn-secondary" href="./index.html">Open Teacher Page</a>
+        <button class="btn btn-secondary" type="button" onclick="refreshData()">Refresh</button>
+        <button class="btn btn-secondary" type="button" onclick="exportCsv()">Export CSV</button>
+        <button class="btn btn-danger" type="button" onclick="markAllPrinted()">Clear Requests</button>
+      </div>
+    </div>
+  </header>
 
-<h3>Add Color</h3>
-<input id="name" placeholder="Color Name">
-<input id="hex" type="color">
-<button onclick="addColor()">Add</button>
+  <main class="page">
+    <div class="container">
+      <section class="hero">
+        <div class="card">
+          <div class="eyebrow">Separate admin site</div>
+          <h1>Manage requests and colors in one place.</h1>
+          <p class="subtle">This is your cleaner backend view. Add colors here, see live requests here, and mark them printed here.</p>
+        </div>
+        <div class="card">
+          <strong style="display:block; margin-bottom:0.45rem; font-size:1.05rem;">What teachers see</strong>
+          <p class="subtle">Teachers only get a simple form and a dropdown of colors you create here.</p>
+        </div>
+      </section>
 
-<h3>Colors</h3>
-<div id="colors"></div>
+      <div class="stats">
+        <div class="stat"><strong id="statOpen">0</strong><span>open requests</span></div>
+        <div class="stat"><strong id="statQty">0</strong><span>total quantity</span></div>
+        <div class="stat"><strong id="statColors">0</strong><span>saved colors</span></div>
+        <div class="stat"><strong id="statTeachers">0</strong><span>teachers in queue</span></div>
+      </div>
 
-<h3>Requests</h3>
-<div id="requests"></div>
+      <section class="section">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2>Manage Colors</h2>
+              <div class="subtle">These are the only colors teachers can choose from.</div>
+            </div>
+            <div class="chip">Admin Only</div>
+          </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const supabase = window.supabase.createClient(
-  'https://gmgoxphohdxjfpttanpq.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdtZ294cGhvaGR4amZwdHRhbnBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzODg3NDYsImV4cCI6MjA5MTk2NDc0Nn0.w9MkUHwUCuyjetTHl7sJ2848PayiPwbaEebO4oO1mmA'
-);
+          <div class="message success" id="colorSuccess">Color saved.</div>
+          <div class="message error" id="colorError">Enter a color name first.</div>
 
-async function addColor() {
-  const name = document.getElementById('name').value;
-  const hex = document.getElementById('hex').value;
-  await supabase.from('colors').insert([{ name, hex }]);
-  loadColors();
-}
+          <div class="color-row">
+            <div class="form-group">
+              <label for="colorName">Color name</label>
+              <input id="colorName" type="text" placeholder="Example: Royal Blue" />
+            </div>
+            <div class="form-group">
+              <label for="colorHex">Color</label>
+              <input id="colorHex" type="color" value="#4f46e5" />
+            </div>
+            <button class="btn btn-primary" type="button" onclick="addColor()">Add Color</button>
+          </div>
 
-async function deleteColor(id) {
-  await supabase.from('colors').delete().eq('id', id);
-  loadColors();
-}
+          <div class="color-list" id="colorList"></div>
+        </div>
+      </section>
 
-async function loadColors() {
-  const { data } = await supabase.from('colors').select('*');
-  const div = document.getElementById('colors');
-  div.innerHTML = '';
-  data.forEach(c => {
-    div.innerHTML += `${c.name} <button onclick="deleteColor(${c.id})">X</button><br>`;
-  });
-}
+      <section class="section">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2>Open Requests</h2>
+              <div class="subtle">Everything waiting to be printed.</div>
+            </div>
+            <div class="chip">Live Queue</div>
+          </div>
 
-async function loadRequests() {
-  const { data } = await supabase.from('requests').select('*');
-  const div = document.getElementById('requests');
-  div.innerHTML = '';
-  data.forEach(r => {
-    div.innerHTML += `${r.teacher} - ${r.room} - ${r.color}<br>`;
-  });
-}
+          <div class="toolbar">
+            <div class="form-group">
+              <label for="searchBox">Search</label>
+              <input id="searchBox" type="text" placeholder="Search teacher, room, color, or notes" oninput="renderRequests()" />
+            </div>
+            <div class="form-group">
+              <label for="colorFilter">Color</label>
+              <select id="colorFilter" onchange="renderRequests()">
+                <option value="">All colors</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="sortBy">Sort</label>
+              <select id="sortBy" onchange="renderRequests()">
+                <option value="newest">Newest first</option>
+                <option value="oldest">Oldest first</option>
+                <option value="teacher">Teacher A-Z</option>
+                <option value="room">Room A-Z</option>
+              </select>
+            </div>
+            <button class="btn btn-secondary" type="button" onclick="copySummary()">Copy Summary</button>
+            <div></div>
+          </div>
 
-loadColors();
-loadRequests();
-</script>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Teacher</th>
+                  <th>Room</th>
+                  <th>Color</th>
+                  <th>Qty</th>
+                  <th>Submitted</th>
+                  <th>Notes</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="requestTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <div class="footer">Admin dashboard for your teacher pass site.</div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://gmgoxphohdxjfpttanpq.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdtZ294cGhvaGR4amZwdHRhbnBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzODg3NDYsImV4cCI6MjA5MTk2NDc0Nn0.w9MkUHwUCuyjetTHl7sJ2848PayiPwbaEebO4oO1mmA';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let currentRequests = [];
+    let currentColors = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await Promise.all([loadColors(), loadRequests()]);
+      runTests();
+    });
+
+    async function loadColors() {
+      const { data, error } = await supabase.from('colors').select('*').order('name', { ascending: true });
+      if (error) {
+        console.error(error);
+        return;
+      }
+      currentColors = Array.isArray(data) ? data : [];
+      renderColors();
+      renderColorFilter();
+      updateStats();
+    }
+
+    async function loadRequests() {
+      const { data, error } = await supabase.from('requests').select('*').order('created_at', { ascending: false });
+      if (error) {
+        console.error(error);
+        return;
+      }
+      currentRequests = Array.isArray(data) ? data : [];
+      renderRequests();
+      updateStats();
+    }
+
+    async function addColor() {
+      hideMessages();
+      const name = document.getElementById('colorName').value.trim();
+      const hex = document.getElementById('colorHex').value;
+      if (!name) {
+        show('colorError');
+        return;
+      }
+
+      const duplicate = currentColors.some(color => String(color.name).toLowerCase() === name.toLowerCase());
+      if (duplicate) {
+        document.getElementById('colorError').textContent = 'That color already exists.';
+        show('colorError');
+        return;
+      }
+
+      const { error } = await supabase.from('colors').insert([{ name, hex }]);
+      if (error) {
+        console.error(error);
+        alert('Could not add color.');
+        return;
+      }
+
+      document.getElementById('colorName').value = '';
+      document.getElementById('colorHex').value = '#4f46e5';
+      document.getElementById('colorError').textContent = 'Enter a color name first.';
+      show('colorSuccess');
+      await loadColors();
+    }
+
+    async function deleteColor(id) {
+      const color = currentColors.find(item => Number(item.id) === Number(id));
+      if (!color) return;
+      const inUse = currentRequests.some(item => item.color === color.name);
+      if (inUse) {
+        alert('That color is being used by an open request. Clear those first.');
+        return;
+      }
+      const { error } = await supabase.from('colors').delete().eq('id', id);
+      if (error) {
+        console.error(error);
+        alert('Could not delete color.');
+        return;
+      }
+      await loadColors();
+    }
+
+    function renderColors() {
+      const list = document.getElementById('colorList');
+      if (!currentColors.length) {
+        list.innerHTML = '<span class="subtle">No colors added yet.</span>';
+        return;
+      }
+      list.innerHTML = currentColors.map(color => `
+        <div class="color-chip">
+          <span class="dot" style="background:${escapeHtml(color.hex)}"></span>
+          <span>${escapeHtml(color.name)}</span>
+          <button class="btn btn-danger" type="button" style="padding:0.45rem 0.7rem;" onclick="deleteColor(${Number(color.id)})">Delete</button>
+        </div>
+      `).join('');
+    }
+
+    function renderColorFilter() {
+      const filter = document.getElementById('colorFilter');
+      const current = filter.value;
+      filter.innerHTML = '<option value="">All colors</option>' + currentColors.map(color => `<option value="${escapeHtml(color.name)}">${escapeHtml(color.name)}</option>`).join('');
+      filter.value = current;
+    }
+
+    function renderRequests() {
+      const body = document.getElementById('requestTable');
+      const search = document.getElementById('searchBox').value.trim().toLowerCase();
+      const color = document.getElementById('colorFilter').value;
+      const sortBy = document.getElementById('sortBy').value;
+
+      let rows = [...currentRequests].filter(item => {
+        const haystack = [item.teacher, item.room, item.color, item.notes, item.created_at]
+          .map(value => String(value || ''))
+          .join(' ')
+          .toLowerCase();
+        return (!search || haystack.includes(search)) && (!color || item.color === color);
+      });
+
+      rows.sort((a, b) => {
+        if (sortBy === 'oldest') return new Date(a.created_at) - new Date(b.created_at);
+        if (sortBy === 'teacher') return String(a.teacher || '').localeCompare(String(b.teacher || ''));
+        if (sortBy === 'room') return String(a.room || '').localeCompare(String(b.room || ''));
+        return new Date(b.created_at) - new Date(a.created_at);
+      });
+
+      if (!rows.length) {
+        body.innerHTML = '<tr><td colspan="7" style="padding:1.2rem; text-align:center; color:#667085;">No matching requests.</td></tr>';
+        return;
+      }
+
+      body.innerHTML = rows.map(item => `
+        <tr>
+          <td><strong>${escapeHtml(item.teacher)}</strong></td>
+          <td>${escapeHtml(item.room)}</td>
+          <td><span class="pill"><span style="color:${getColorHex(item.color)};">●</span>${escapeHtml(item.color)}</span></td>
+          <td>${escapeHtml(item.quantity || 1)}</td>
+          <td>${escapeHtml(formatDate(item.created_at))}</td>
+          <td>${escapeHtml(item.notes || '')}</td>
+          <td>
+            <div class="row-actions">
+              <button class="btn btn-secondary" type="button" onclick="duplicateRequest(${Number(item.id)})">Duplicate</button>
+              <button class="btn btn-success" type="button" onclick="markPrinted(${Number(item.id)})">Printed</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function duplicateRequest(id) {
+      const original = currentRequests.find(item => Number(item.id) === Number(id));
+      if (!original) return;
+      const { error } = await supabase.from('requests').insert([{
+        teacher: original.teacher,
+        room: original.room,
+        color: original.color,
+        quantity: original.quantity || 1,
+        notes: original.notes || ''
+      }]);
+      if (error) {
+        console.error(error);
+        alert('Could not duplicate request.');
+        return;
+      }
+      await loadRequests();
+    }
+
+    async function markPrinted(id) {
+      const { error } = await supabase.from('requests').delete().eq('id', id);
+      if (error) {
+        console.error(error);
+        alert('Could not remove request.');
+        return;
+      }
+      await loadRequests();
+    }
+
+    async function markAllPrinted() {
+      if (!currentRequests.length) return;
+      if (!confirm('Clear all open requests?')) return;
+      const ids = currentRequests.map(item => item.id);
+      const { error } = await supabase.from('requests').delete().in('id', ids);
+      if (error) {
+        console.error(error);
+        alert('Could not clear requests.');
+        return;
+      }
+      await loadRequests();
+    }
+
+    async function refreshData() {
+      await Promise.all([loadColors(), loadRequests()]);
+    }
+
+    function updateStats() {
+      const qty = currentRequests.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
+      const teachers = new Set(currentRequests.map(item => item.teacher)).size;
+      document.getElementById('statOpen').textContent = currentRequests.length;
+      document.getElementById('statQty').textContent = qty;
+      document.getElementById('statColors').textContent = currentColors.length;
+      document.getElementById('statTeachers').textContent = teachers;
+    }
+
+    async function exportCsv() {
+      const headers = ['Teacher', 'Room', 'Color', 'Quantity', 'Submitted Date', 'Notes'];
+      const csv = [headers.join(',')].concat(currentRequests.map(item => [
+        csvSafe(item.teacher),
+        csvSafe(item.room),
+        csvSafe(item.color),
+        csvSafe(item.quantity || 1),
+        csvSafe(formatDate(item.created_at)),
+        csvSafe(item.notes || '')
+      ].join(','))).join('\n');
+
+      downloadFile('teacher-pass-admin-export.csv', 'text/csv;charset=utf-8;', csv);
+    }
+
+    async function copySummary() {
+      const text = currentRequests.length
+        ? currentRequests.map(item => `${item.teacher} | Room ${item.room} | ${item.color} | Qty ${item.quantity || 1}${item.notes ? ' | ' + item.notes : ''}`).join('\n')
+        : 'No open requests.';
+      try {
+        await navigator.clipboard.writeText(text);
+        alert('Summary copied.');
+      } catch (error) {
+        console.error(error);
+        alert('Could not copy automatically.');
+      }
+    }
+
+    function getColorHex(name) {
+      const match = currentColors.find(color => color.name === name);
+      return match ? match.hex : '#94a3b8';
+    }
+
+    function formatDate(value) {
+      if (!value) return '';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return String(value);
+      const datePart = date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+      const timePart = date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+      return `${datePart} ${timePart}`;
+    }
+
+    function downloadFile(filename, type, content) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    function csvSafe(value) {
+      return `"${String(value ?? '').replace(/"/g, '""')}"`;
+    }
+
+    function show(id) { document.getElementById(id).classList.add('show'); }
+    function hideMessages() { ['colorSuccess', 'colorError'].forEach(id => document.getElementById(id).classList.remove('show')); }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function runTests() {
+      console.assert(escapeHtml('<tag>') === '&lt;tag&gt;', 'escapeHtml should escape tags');
+      console.assert(csvSafe('A"B') === '"A""B"', 'csvSafe should escape quotes');
+      console.assert(getColorHex('missing') === '#94a3b8', 'getColorHex should fallback');
+    }
+  </script>
 </body>
 </html>
-
