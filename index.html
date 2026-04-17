@@ -1,18 +1,18 @@
-juat rewrite index.html and admin.html to make it easy for me
-Teacher-pass-admin-html
-· html
-<!-- ======================= index.html (TEACHER PAGE) ======================= -->
-<input id="hex" type="color">
-<button onclick="addColor()">Add</button>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Teacher Pass</title>
+</head>
+<body>
+<h2>Request a Pass</h2>
 
+<input id="teacher" placeholder="Teacher Last Name"><br><br>
+<input id="room" placeholder="Room Number"><br><br>
 
-<h3>Colors</h3>
-<div id="colors"></div>
+<select id="color"></select><br><br>
 
-
-<h3>Requests</h3>
-<div id="requests"></div>
-
+<button onclick="submit()">Submit</button>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -21,43 +21,34 @@ const supabase = window.supabase.createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdtZ294cGhvaGR4amZwdHRhbnBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzODg3NDYsImV4cCI6MjA5MTk2NDc0Nn0.w9MkUHwUCuyjetTHl7sJ2848PayiPwbaEebO4oO1mmA'
 );
 
-
-async function addColor() {
-  const name = document.getElementById('name').value;
-  const hex = document.getElementById('hex').value;
-  await supabase.from('colors').insert([{ name, hex }]);
-  loadColors();
-}
-
-
-async function deleteColor(id) {
-  await supabase.from('colors').delete().eq('id', id);
-  loadColors();
-}
-
-
 async function loadColors() {
   const { data } = await supabase.from('colors').select('*');
-  const div = document.getElementById('colors');
-  div.innerHTML = '';
+  const select = document.getElementById('color');
+  select.innerHTML = '<option value="">Select Color</option>';
   data.forEach(c => {
-    div.innerHTML += `${c.name} <button onclick="deleteColor(${c.id})">X</button><br>`;
+    const opt = document.createElement('option');
+    opt.value = c.name;
+    opt.textContent = c.name;
+    select.appendChild(opt);
   });
 }
 
+async function submit() {
+  const teacher = document.getElementById('teacher').value;
+  const room = document.getElementById('room').value;
+  const color = document.getElementById('color').value;
 
-async function loadRequests() {
-  const { data } = await supabase.from('requests').select('*');
-  const div = document.getElementById('requests');
-  div.innerHTML = '';
-  data.forEach(r => {
-    div.innerHTML += `${r.teacher} - ${r.room} - ${r.color}<br>`;
-  });
+  if (!teacher || !room || !color) {
+    alert('Fill everything');
+    return;
+  }
+
+  await supabase.from('requests').insert([{ teacher, room, color }]);
+  alert('Submitted');
 }
-
 
 loadColors();
-loadRequests();
 </script>
 </body>
 </html>
+
