@@ -980,8 +980,7 @@
     const ADMIN_PASSCODE = 'printpasses';
     let adminUnlocked = false;
 
-    const originalOnLoad = window.addEventListener;
-  </script>
+    </script>
 
   <script>
     const defaultColors = [
@@ -1362,8 +1361,7 @@
         csvSafe(item.submittedAt),
         csvSafe(item.time),
         csvSafe(item.notes || '')
-      ].join(','))).join('
-');
+      ].join(','))).join('\n');
       downloadFile('teacher-pass-requests.csv', 'text/csv;charset=utf-8;', csv);
     }
 
@@ -1432,4 +1430,5 @@
   </script>
 </body>
 </html>
+
 
